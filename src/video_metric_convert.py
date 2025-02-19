@@ -80,13 +80,23 @@ if __name__ == '__main__':
 
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+    pick = "vits"
     model_configs = {
-        'vits': {'encoder': 'vits', 'features': 64, 'out_channels': [48, 96, 192, 384]},
-        'vitl': {'encoder': 'vitl', 'features': 256, 'out_channels': [256, 512, 1024, 1024]},
+        "vits": {"encoder": "vits", "features": 64, "out_channels": [48, 96, 192, 384]},
+        "vitl": {
+            "encoder": "vitl",
+            "features": 256,
+            "out_channels": [256, 512, 1024, 1024],
+        },
     }
 
-    video_depth_anything = VideoDepthAnything(**model_configs['vits'])
-    video_depth_anything.load_state_dict(torch.load(f'./checkpoints/video_depth_anything_vits.pth', map_location='cpu'), strict=True)
+    video_depth_anything = VideoDepthAnything(**model_configs[pick])
+    video_depth_anything.load_state_dict(
+        torch.load(
+            f"./checkpoints/video_depth_anything_{pick}.pth", map_location="cpu"
+        ),
+        strict=True,
+    )
     video_depth_anything = video_depth_anything.to(DEVICE).eval()
 
     frames, target_fps = read_video_frames(args.color_video, args.max_frames, args.target_fps, args.max_res)
